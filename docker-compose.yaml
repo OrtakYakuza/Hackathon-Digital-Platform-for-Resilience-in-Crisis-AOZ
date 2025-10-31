@@ -17,26 +17,3 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
       ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
-
-  postgres-db:
-    image: postgres
-    restart: always
-    shm_size: 128mb
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root12345
-      POSTGRES_DB: postgres
-
-  backend:
-    build: ./backend
-    restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      - mongo
-      - postgres-db
-    environment:
-      MONGO_URL: mongodb://root:example@mongo:27017/
-      POSTGRES_URL: postgres://root:root12345@postgres-db:5432/postgres
