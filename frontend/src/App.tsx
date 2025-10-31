@@ -1,24 +1,24 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React, {JSX} from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
+
 import LocationsPage from "./LocationsPage";
+import LoginPage from "./LoginPage";
 import LocationItemsPage from "./LocationItemsPage";
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/location" element={<LocationsPage />} />
-        <Route path="/location/:name" element={<LocationItemsPage />} />
-      </Routes>
-    </Router>
-  );
-}
-
-function Home() {
+// simple landing/home page (optional, not protected)
+const Home: React.FC = () => {
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
       <h1>AOZ Crisis Supply Platform</h1>
+
+      <p>Digital overview of supplies, depots and availability for AOZ response teams.</p>
+
       <Link to="/location">
         <button
           style={{
@@ -28,13 +28,55 @@ function Home() {
             border: "none",
             borderRadius: "0.25rem",
             cursor: "pointer",
+            fontWeight: 500,
+            marginTop: "1rem",
           }}
         >
-          Search by Location
+          Go to Locations
         </button>
       </Link>
     </div>
   );
-}
+};
+
+// wrapper that checks if user is "logged in"
+const ProtectedRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
+  const username = localStorage.getItem("username");
+  const role = localStorage.getItem("role");
+
+  if (!username || !role) {
+    // not logged in -> go to login
+    return <Navigate to="/login" replace />;
+  }
+
+  return element;
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        {/* default route: if nothing, go to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* login is always public */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* optional landing page for demo */}
+        <Route path="/home" element={<Home />} />
+
+        {/* protected routes */}
+        <Route
+          path="/location"
+          element={<ProtectedRoute element={<LocationsPage />} />}
+        />
+        <Route
+          path="/location/:name"
+          element={<ProtectedRoute element={<LocationItemsPage />} />}
+        />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
