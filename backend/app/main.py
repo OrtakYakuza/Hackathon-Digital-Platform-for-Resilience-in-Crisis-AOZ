@@ -58,22 +58,51 @@ def get_locations():
     locations = list(db.locations.find({}, {"_id": 0}))
     return {"locations": locations}
 
-# Sample hierarchical dataset
+# NEW SAMPLE
 sample_items = [
-    # Food
-    {"category": "food", "name": "Apple", "weight": 0.2, "price": 0.5, "stock": 50},
-    {"category": "food", "name": "Banana", "weight": 0.25, "price": 0.3, "stock": 100},
-    {"category": "food", "name": "Bread", "weight": 0.5, "price": 2.0, "stock": 20},
-    
-    # Bedding
-    {"category": "bedding", "name": "Bed", "size": "queen", "material": "wood", "stock": 5},
-    {"category": "bedding", "name": "Blanket", "size": "double", "material": "wool", "stock": 15},
-    {"category": "bedding", "name": "Pillow", "size": "standard", "material": "feather", "stock": 25}, 
-    
-    # Hygiene
-    {"category": "hygiene", "name": "Soap", "weight": 0.1, "price": 1.0, "stock": 50},
-    {"category": "hygiene", "name": "Shampoo", "volume": 0.5, "price": 3.0, "stock": 30},
-    {"category": "hygiene", "name": "Toothbrush", "size": "medium", "material": "plastic", "stock": 40},
+    { "name": "Bett", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_west"},
+    {"name": "Bett", "category": "bedding", "status": "reserved", "location": "loc_altstetten"},
+    {"name": "Bett", "category": "bedding", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_west"},
+    {"name": "Bett", "category": "bedding", "status": "reserved", "location": "loc_altstetten"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Bett", "category": "bedding", "status": "available", "location": "loc_centrum"},
+
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Decke", "category": "bedding", "status": "reserved", "location": "loc_altstetten"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_west"},
+    {"name": "Decke", "category": "bedding", "status": "reserved", "location": "loc_centrum"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_west"},
+    {"name": "Decke", "category": "bedding", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_altstetten"},
+    {"name": "Decke", "category": "bedding", "status": "available", "location": "loc_centrum"},
+
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_west"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Kissen", "category": "bedding", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Kissen", "category": "bedding", "status": "reserved", "location": "loc_west"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Kissen", "category": "bedding", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kissen", "category": "bedding", "status": "reserved", "location": "loc_centrum"},
+
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_altstetten"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Schlafsack", "category": "bedding", "status": "reserved", "location": "loc_west"},
+    {"name": "Schlafsack", "category": "bedding", "status": "reserved", "location": "loc_zuerichwest"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_altstetten"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_centrum"},
+    {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Schlafsack", "category": "bedding", "status": "reserved", "location": "loc_west"},
 ]
 
 # Route to populate MongoDB
