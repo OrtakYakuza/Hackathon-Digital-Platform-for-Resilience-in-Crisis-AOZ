@@ -20,7 +20,7 @@ app.add_middleware(
 # --- Database connections ---
 # MongoDB connection
 mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://root:example@localhost:27017/")
 db = client["aoz_db"]
 
 # --- Routes ---
@@ -105,6 +105,7 @@ sample_items = [
     {"name": "Schlafsack", "category": "bedding", "status": "reserved", "location": "loc_west"},
 ]
 
+
 # Route to populate MongoDB
 @app.post("/items/populate")
 def populate_items():
@@ -149,3 +150,14 @@ def populate_locations():
     db.locations.delete_many({})  # clear existing data
     db.locations.insert_many(sample_locations)
     return {"status": "inserted sample locations", "count": len(sample_locations)}
+
+@app.get("/mongo/test")
+def test_mongo():
+    """Check if MongoDB connection works"""
+    try:
+        db.list_collection_names()
+        return {"mongo": "connected"}
+    except Exception as e:
+        return {"mongo": "connection failed", "error": str(e)}
+
+
