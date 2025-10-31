@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+
 import bedImg from "./assets/bed.jpg";
+import blanketImg from "./assets/blanket.jpg";
+import pillowImg from "./assets/pillow.jpg";
+import sleepingBagImg from "./assets/sleeping_bag.jpg";
+
+import toiletPaperImg from "./assets/toilet_paper.jpg";
+import soapImg from "./assets/soap.png";
+import toothpasteImg from "./assets/toothpaste.png";
+import towelImg from "./assets/towel.jpg";
+import toothbrushImg from "./assets/toothbrush.png";
 
 // 📍 Mapping of location codes to realistic addresses
 const locationMap: Record<string, string> = {
@@ -49,6 +59,14 @@ function ItemDetailPage() {
 
   const imageMap: Record<string, string> = {
     Bett: bedImg,
+    Decke: blanketImg,
+    Kissen: pillowImg,
+    Schlafsack: sleepingBagImg,
+    "WC-Papier": toiletPaperImg,
+    Seife: soapImg,
+    "Kasten Zahnpasta": toothpasteImg,
+    Tuch: towelImg,
+    "Kasten Zahnbürste": toothbrushImg,
   };
 
   const imageSrc =
