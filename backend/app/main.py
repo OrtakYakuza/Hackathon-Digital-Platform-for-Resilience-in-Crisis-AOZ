@@ -8,7 +8,7 @@ from fastapi import Query
 
 # --- Database connections ---
 # MongoDB connection
-client = MongoClient("mongodb://root:example@localhost:27017/")
+client = MongoClient("mongodb://localhost:27017/")
 db = client["aoz_db"]
 users_collection = db["users"]
 
@@ -146,7 +146,80 @@ sample_items = [
     {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_centrum"},
     {"name": "Schlafsack", "category": "bedding", "status": "available", "location": "loc_zuerichwest"},
     {"name": "Schlafsack", "category": "bedding", "status": "reserved", "location": "loc_west"},
+
+    # Zahnbürste
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+
+    # Zahnpasta
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+
+    # Tuch
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "Tuch", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "Tuch", "category": "hygiene", "status": "reserved", "location": "loc_zuerichwest"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Tuch", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+
+    # Seife
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "Seife", "category": "hygiene", "status": "reserved", "location": "loc_altstetten"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_west"},
+    {"name": "Seife", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_west"},
+    {"name": "Seife", "category": "hygiene", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+
+    # WC-Papier
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_west"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_centrum"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "reserved", "location": "loc_west"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_oerlikon"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
+
+    # Add duplicates to reach around 100 total
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_west"},
+    {"name": "Seife", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Tuch", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_west"},
+    {"name": "Kasten Zahnbürste", "category": "hygiene", "status": "reserved", "location": "loc_altstetten"},
+    {"name": "Seife", "category": "hygiene", "status": "reserved", "location": "loc_oerlikon"},
+    {"name": "Tuch", "category": "hygiene", "status": "available", "location": "loc_zuerichwest"},
+    {"name": "WC-Papier", "category": "hygiene", "status": "available", "location": "loc_altstetten"},
+    {"name": "Kasten Zahnpasta", "category": "hygiene", "status": "reserved", "location": "loc_centrum"},
 ]
+
 
 
 # Route to populate MongoDB
@@ -370,6 +443,73 @@ def get_bedding_item_detail(item_name: str):
         "Decke": "Warme Wolldecke, geeignet für kalte Nächte",
         "Kissen": "Weiches Kopfkissen aus Baumwolle",
         "Schlafsack": "Leichter Schlafsack für den Notfalleinsatz",
+    }
+
+    description = description_map.get(item_name, "Keine Beschreibung verfügbar.")
+
+    return {
+        "name": item_name,
+        "description": description,
+        "overall": total_count,
+        "available": available_count,
+        "reserved": reserved_count,
+        "per_location": per_location,
+    }
+
+@app.get("/items/hygiene")
+def get_hygiene():
+    """Return total count of hygiene items by type (no status differentiation)"""
+    pipeline = [
+        {"$match": {"category": "hygiene"}},
+        {
+            "$group": {
+                "_id": "$name",
+                "count": {"$sum": 1}
+            }
+        },
+        {"$sort": {"_id": 1}}
+    ]
+
+    result = list(db.items.aggregate(pipeline))
+    # Convert MongoDB aggregation output into a simple dictionary
+    summary = {item["_id"]: item["count"] for item in result}
+
+    return {"hygiene_summary": summary}
+
+
+@app.get("/items/hygiene/{item_name}")
+def get_hygiene_item_detail(item_name: str):
+    """Return detailed info about a specific hygiene item"""
+    cursor = db.items.find({"category": "hygiene", "name": item_name})
+    items = list(cursor)
+
+    if not items:
+        return {"error": "Item not found"}
+
+    total_count = len(items)
+    available_count = sum(1 for i in items if i.get("status") == "available")
+    reserved_count = sum(1 for i in items if i.get("status") == "reserved")
+
+    # Count per location
+    per_location = defaultdict(lambda: {"overall": 0, "available": 0, "reserved": 0})
+    for item in items:
+        loc = item.get("location", "unknown")
+        per_location[loc]["overall"] += 1
+        if item.get("status") == "available":
+            per_location[loc]["available"] += 1
+        elif item.get("status") == "reserved":
+            per_location[loc]["reserved"] += 1
+
+    per_location = dict(per_location)
+
+    # Basic descriptions (redundant but helpful for demo)
+    description_map = {
+        "Zahnbürste": "Standard-Zahnbürste für Erwachsene.",
+        "Zahnpasta": "100ml Tube mit Fluorid-Zahnpasta.",
+        "Seife": "Handseife in Stückform, neutraler Duft.",
+        "Shampoo": "250ml Flasche mildes Shampoo für alle Haartypen.",
+        "Duschgel": "Duschgel für tägliche Körperpflege, 300ml.",
+        "Handtuch": "Baumwollhandtuch, 70x140 cm, weiß.",
     }
 
     description = description_map.get(item_name, "Keine Beschreibung verfügbar.")

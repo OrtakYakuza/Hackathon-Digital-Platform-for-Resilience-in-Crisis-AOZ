@@ -1,28 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
+// 🛏 Bedding images
 import bedImg from "./assets/bed.jpg";
 import blanketImg from "./assets/blanket.jpg";
 import pillowImg from "./assets/pillow.jpg";
 import sleepingBagImg from "./assets/sleeping_bag.jpg";
 
+// 🧼 Hygiene images
+import toothbrushImg from "./assets/toothbrush.png";
+import toothpasteImg from "./assets/toothpaste.png";
+import towelImg from "./assets/towel.jpg";
+import soapImg from "./assets/soap.png";
+import toiletpaperImg from "./assets/toilet_paper.jpg";
+
 type Summary = {
   [key: string]: number;
 };
 
-// mapping German category names to backend endpoints
+// Mapping display names → backend endpoints
 const categoryConfig: Record<string, { endpoint: string }> = {
   Bettwaren: { endpoint: "/items/bedding" },
   Lebensmittel: { endpoint: "/items/food" },
-  // add more mappings later (Hygiene, Kleidung, etc.)
+  Hygiene: { endpoint: "/items/hygiene" },
 };
 
-// 🖼️ Local image map (add more here later)
+// 🖼️ Local image map
 const imageMap: Record<string, string> = {
+  // Bedding
   Bett: bedImg,
   Decke: blanketImg,
   Kissen: pillowImg,
-  Schlafsack: sleepingBagImg
+  Schlafsack: sleepingBagImg,
+
+  // Hygiene
+  "Kasten Zahnbürste": toothbrushImg,
+  "Kasten Zahnpasta": toothpasteImg,
+  Tuch: towelImg,
+  Seife: soapImg,
+  "WC-Papier": toiletpaperImg,
 };
 
 function ItemCategoryPage() {
@@ -58,6 +74,8 @@ function ItemCategoryPage() {
             found = data.bedding_summary;
           } else if (data.food_summary) {
             found = data.food_summary;
+          } else if (data.hygiene_summary) {
+            found = data.hygiene_summary;
           }
         }
 

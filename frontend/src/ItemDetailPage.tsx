@@ -2,6 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import bedImg from "./assets/bed.jpg";
 
+// 📍 Mapping of location codes to realistic addresses
+const locationMap: Record<string, string> = {
+  loc_centrum: "Zentraldepot Zürich, Lagerstrasse 33, 8004 Zürich",
+  loc_west: "Lagerhaus Zürich-West, Förrlibuckstrasse 180, 8005 Zürich",
+  loc_altstetten: "Verteilstelle Altstetten, Hohlstrasse 560, 8048 Zürich",
+  loc_oerlikon: "Zentrum Oerlikon Depot, Schaffhauserstrasse 400, 8050 Zürich",
+  loc_zuerichwest: "Lager Zürich-West End, Pfingstweidstrasse 102, 8005 Zürich",
+};
+
 type ItemDetail = {
   name: string;
   description: string;
@@ -172,43 +181,29 @@ function ItemDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.entries(detail.per_location).map(([loc, stats]) => (
-                    <tr key={loc}>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #eee",
-                          padding: "0.5rem",
-                        }}
-                      >
-                        {loc}
-                      </td>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #eee",
-                          padding: "0.5rem",
-                        }}
-                      >
-                        {stats.overall}
-                      </td>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #eee",
-                          padding: "0.5rem",
-                        }}
-                      >
-                        {stats.available}
-                      </td>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #eee",
-                          padding: "0.5rem",
-                        }}
-                      >
-                        {stats.reserved}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                {Object.entries(detail.per_location).map(([loc, stats]) => (
+                  <tr key={loc}>
+                    <td
+                      style={{
+                        borderBottom: "1px solid #eee",
+                        padding: "0.5rem",
+                      }}
+                    >
+                      {locationMap[loc] || loc}
+                    </td>
+                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>
+                      {stats.overall}
+                    </td>
+                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>
+                      {stats.available}
+                    </td>
+                    <td style={{ borderBottom: "1px solid #eee", padding: "0.5rem" }}>
+                      {stats.reserved}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
               </table>
             </div>
           )}
@@ -262,80 +257,138 @@ function ItemDetailPage() {
             </div>
 
 
+        {/* Bestellung Anfragen Modal */}
         {showOrderModal && (
+        <div
+            style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            }}
+        >
             <div
-                style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "rgba(0,0,0,0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1000,
-                }}
+            style={{
+                background: "white",
+                padding: "2rem",
+                borderRadius: "0.5rem",
+                minWidth: "320px",
+                maxWidth: "90%",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+            }}
             >
-                <div style={{ background: "white", padding: "2rem", borderRadius: "0.5rem", minWidth: "300px" }}>
-                <h2>Bestellung Anfragen: {decodedItem}</h2>
-                <label>
-                    Anzahl: 
-                    <input
-                    type="number"
-                    min={1}
-                    value={orderQuantity}
-                    onChange={(e) => setOrderQuantity(Number(e.target.value))}
-                    />
-                </label>
-                <br/>
-                <label>
-                    Ziel-Lager:
-                    <select value={orderLocation} onChange={(e) => setOrderLocation(e.target.value)}>
-                    <option value="loc_centrum">Zentrum</option>
-                    <option value="loc_nord">Nord</option>
-                    <option value="loc_sued">Süd</option>
-                    </select>
-                </label>
-                <br/><br/>
-                <button onClick={() => { /* POST request logic here */ setShowOrderModal(false); }}>Senden</button>
-                <button onClick={() => setShowOrderModal(false)} style={{ marginLeft: "1rem" }}>Abbrechen</button>
-                </div>
-            </div>
-            )}
+            <h2 style={{ marginBottom: "1rem" }}>Bestellung Anfragen: {decodedItem}</h2>
 
-            {showUpdateModal && (
-                <div
-                    style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    background: "rgba(0,0,0,0.5)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    zIndex: 1000,
-                    }}
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                Anzahl:
+                <input
+                type="number"
+                min={1}
+                value={orderQuantity}
+                onChange={(e) => setOrderQuantity(Number(e.target.value))}
+                style={{ width: "100%", padding: "0.4rem", marginTop: "0.2rem" }}
+                />
+            </label>
+
+            <label style={{ display: "block", marginBottom: "1rem" }}>
+                Ziel-Lager:
+                <input
+                type="text"
+                placeholder="8008 Zürich ..."
+                value={orderLocation}
+                onChange={(e) => setOrderLocation(e.target.value)}
+                style={{ width: "100%", padding: "0.4rem", marginTop: "0.2rem" }}
+                />
+            </label>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                <button
+                onClick={() => { /* POST request here */ setShowOrderModal(false); }}
+                style={{ padding: "0.5rem 1rem", backgroundColor: "#5bc0de", color: "white", border: "none", borderRadius: "0.35rem", cursor: "pointer" }}
                 >
-                    <div style={{ background: "white", padding: "2rem", borderRadius: "0.5rem", minWidth: "300px" }}>
-                    <h2>Datenbank aktualisieren: {decodedItem}</h2>
-                    <label>
-                        Neue Gesamtanzahl:
-                        <input
-                        type="number"
-                        min={0}
-                        value={newTotal}
-                        onChange={(e) => setNewTotal(Number(e.target.value))}
-                        />
-                    </label>
-                    <br/><br/>
-                    <button onClick={() => { /* POST request logic here */ setShowUpdateModal(false); }}>Aktualisieren</button>
-                    <button onClick={() => setShowUpdateModal(false)} style={{ marginLeft: "1rem" }}>Abbrechen</button>
-                    </div>
-                </div>
-                )}
+                Senden
+                </button>
+                <button
+                onClick={() => setShowOrderModal(false)}
+                style={{ padding: "0.5rem 1rem", borderRadius: "0.35rem", cursor: "pointer" }}
+                >
+                Abbrechen
+                </button>
+            </div>
+            </div>
+        </div>
+        )}
+
+        {/* Datenbank Aktualisieren Modal */}
+        {showUpdateModal && (
+        <div
+            style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            }}
+        >
+            <div
+            style={{
+                background: "white",
+                padding: "2rem",
+                borderRadius: "0.5rem",
+                minWidth: "300px",
+                maxWidth: "90%",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                textAlign: "center",
+            }}
+            >
+            <h2 style={{ marginBottom: "1rem" }}>Datenbank aktualisieren: {decodedItem}</h2>
+
+            <p style={{ marginBottom: "1rem" }}>Gesamtanzahl: {newTotal}</p>
+
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "1rem" }}>
+                <button
+                onClick={() => setNewTotal((prev) => prev + 1)}
+                style={{ padding: "0.5rem 1rem", backgroundColor: "#5bc0de", color: "white", border: "none", borderRadius: "0.35rem", cursor: "pointer" }}
+                >
+                +
+                </button>
+                <button
+                onClick={() => setNewTotal((prev) => (prev > 0 ? prev - 1 : 0))}
+                style={{ padding: "0.5rem 1rem", backgroundColor: "#5bc0de", color: "white", border: "none", borderRadius: "0.35rem", cursor: "pointer" }}
+                >
+                −
+                </button>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                <button
+                onClick={() => { /* POST request logic here */ setShowUpdateModal(false); }}
+                style={{ padding: "0.5rem 1rem", backgroundColor: "#5bc0de", color: "white", border: "none", borderRadius: "0.35rem", cursor: "pointer" }}
+                >
+                Aktualisieren
+                </button>
+                <button
+                onClick={() => setShowUpdateModal(false)}
+                style={{ padding: "0.5rem 1rem", borderRadius: "0.35rem", cursor: "pointer" }}
+                >
+                Abbrechen
+                </button>
+            </div>
+            </div>
+        </div>
+        )}
+
 
 
     </div>
