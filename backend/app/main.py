@@ -4,12 +4,13 @@ from pymongo import MongoClient
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
+from fastapi import Query
 
 
 # --- Database connections ---
 # MongoDB connection
 mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://root:example@localhost:27017/")
 db = client["aoz_db"]
 users_collection = db["users"]
 
@@ -28,13 +29,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Database connections ---
-# MongoDB connection
-mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
-client = MongoClient("mongodb://localhost:27017/")
-db = client["aoz_db"]
 
 # --- Routes ---
+
+@app.get("/items/by_location")
+def get_items_by_location(location: str = Query(..., description="e.g. loc_centrum")):
+    """
+    Return stock for a single location, grouped by category and item name.
+    Example: bedding -> Bett / Kissen / Decke / Schlafsack with counts.
+    """
+    cursor = db.items.find({"location": location}, {"_id": 0})
+
+    # structure:
+    # categories["bedding"] = { "Bett": {"available": 0, "reserved": 0} , ... }
+    categories = defaultdict(lambda: defaultdict(lambda: {"available": 0, "reserved": 0}))
+
+    for doc in cursor:
+        cat = doc.get("category", "unknown")
+        item_name = doc.get("name", "unknown")
+        status = doc.get("status", "available")
+        if status not in ["available", "reserved"]:
+            status = "available"
+        categories[cat][item_name][status] += 1
+
+    # convert that defaultdict mess into clean arrays for frontend
+    result_categories = {}
+    for cat, items in categories.items():
+        result_categories[cat] = []
+        for item_name, counts in items.items():
+            available = counts["available"]
+            reserved = counts["reserved"]
+            total = available + reserved
+            result_categories[cat].append(
+                {
+                    "name": item_name,
+                    "available": available,
+                    "reserved": reserved,
+                    "total": total,
+                }
+            )
+
+    return {
+        "location": location,
+        "categories": result_categories,
+    }
+
 @app.get("/")
 def root():
     """Health check route"""
