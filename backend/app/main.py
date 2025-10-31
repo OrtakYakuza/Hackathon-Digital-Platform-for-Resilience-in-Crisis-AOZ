@@ -3,12 +3,13 @@ from fastapi import FastAPI
 from pymongo import MongoClient
 import os
 from fastapi.middleware.cors import CORSMiddleware
+from collections import defaultdict
 
 
 # --- Database connections ---
 # MongoDB connection
 mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
-client = MongoClient("mongodb://root:example@localhost:27017/")
+client = MongoClient("mongodb://localhost:27017/")
 db = client["aoz_db"]
 users_collection = db["users"]
 
@@ -26,6 +27,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- Database connections ---
+# MongoDB connection
+mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
+client = MongoClient("mongodb://localhost:27017/")
+db = client["aoz_db"]
 
 # --- Routes ---
 @app.get("/")
@@ -246,3 +253,67 @@ sample_users = [
   "comments": "Teamleiterin Kriese 1"
 },
 ]
+@app.get("/items/bedding")
+def get_bedding():
+    """Return total count of bedding items by type (no status differentiation)"""
+    pipeline = [
+        {"$match": {"category": "bedding"}},
+        {
+            "$group": {
+                "_id": "$name",
+                "count": {"$sum": 1}
+            }
+        },
+        {"$sort": {"_id": 1}}
+    ]
+
+    result = list(db.items.aggregate(pipeline))
+    # Convert MongoDB aggregation output into a simple dictionary
+    summary = {item["_id"]: item["count"] for item in result}
+
+    return {"bedding_summary": summary}
+
+@app.get("/items/bedding/{item_name}")
+def get_bedding_item_detail(item_name: str):
+    # Fetch all items in the bedding category with that name
+    cursor = db.items.find({"category": "bedding", "name": item_name})
+    items = list(cursor)
+
+    if not items:
+        return {"error": "Item not found"}
+
+    total_count = len(items)
+    available_count = sum(1 for i in items if i.get("status") == "available")
+    reserved_count = sum(1 for i in items if i.get("status") == "reserved")
+
+    # Count per location
+    per_location = defaultdict(lambda: {"overall": 0, "available": 0, "reserved": 0})
+    for item in items:
+        loc = item.get("location", "unknown")
+        per_location[loc]["overall"] += 1
+        if item.get("status") == "available":
+            per_location[loc]["available"] += 1
+        elif item.get("status") == "reserved":
+            per_location[loc]["reserved"] += 1
+
+    # Convert defaultdict to regular dict
+    per_location = dict(per_location)
+
+    # You can store descriptions in Mongo, but here’s an example fallback:
+    description_map = {
+        "Bett": "80 cm breites, faltbares Feldbett für Flüchtlingsunterkünfte",
+        "Decke": "Warme Wolldecke, geeignet für kalte Nächte",
+        "Kissen": "Weiches Kopfkissen aus Baumwolle",
+        "Schlafsack": "Leichter Schlafsack für den Notfalleinsatz",
+    }
+
+    description = description_map.get(item_name, "Keine Beschreibung verfügbar.")
+
+    return {
+        "name": item_name,
+        "description": description,
+        "overall": total_count,
+        "available": available_count,
+        "reserved": reserved_count,
+        "per_location": per_location,
+    }

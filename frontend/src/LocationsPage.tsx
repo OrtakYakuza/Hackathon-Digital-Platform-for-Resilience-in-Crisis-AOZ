@@ -44,7 +44,7 @@ function LocationsPage() {
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
       <Link to="/home" style={{ color: "#007bff" }}>
-        ← Back to Start
+        ← Zurück
       </Link>
       <h1>Orte in Zürich</h1>
 

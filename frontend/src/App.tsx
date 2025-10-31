@@ -12,6 +12,8 @@ import LoginPage from "./LoginPage";
 import LocationItemsPage from "./LocationItemsPage";
 import ItemsPage from "./ItemsPage";
 import UserManagementPage from "./UserManagementPage";
+import ItemCategoryPage from "./ItemCategoryPage";
+import ItemDetailPage from "./ItemDetailPage";
 
 // --- ICONS ---
 const SearchIcon: React.FC<{ style?: React.CSSProperties }> = ({ style }) => (
@@ -383,6 +385,12 @@ const App: React.FC = () => {
           path="/users"
           element={<ProtectedRoute element={<UserManagementPage />} />}
         />
+
+         <Route path="/item" element={<ItemsPage />} />
+
+        <Route path="/items/:name" element={<ItemCategoryPage />} />
+
+        <Route path="/items/:category/:itemName" element={<ItemDetailPage />} />
       </Routes>
     </Router>
   );
