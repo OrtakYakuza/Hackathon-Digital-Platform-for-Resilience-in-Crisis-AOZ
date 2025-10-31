@@ -11,7 +11,7 @@ import LocationsPage from "./LocationsPage";
 import LoginPage from "./LoginPage";
 import LocationItemsPage from "./LocationItemsPage";
 import ItemsPage from "./ItemsPage";
-//import BenutzerverwaltungPage from "./BenutzerverwaltungPage"; // <-- Add this import
+import UserManagementPage from "./UserManagementPage";
 
 // --- ICONS ---
 const SearchIcon: React.FC<{ style?: React.CSSProperties }> = ({ style }) => (
@@ -311,7 +311,7 @@ const Home: React.FC = () => {
 
         {/* Benutzerverwaltung Button */}
         <Link
-          to="/benutzerverwaltung"
+          to="/users"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -379,10 +379,9 @@ const App: React.FC = () => {
           path="/item"
           element={<ProtectedRoute element={<ItemsPage />} />}
         />
-        {/* NEW ROUTE */}
         <Route
-          path="/benutzerverwaltung"
-         // element={<ProtectedRoute element={<BenutzerverwaltungPage />} />}
+          path="/users"
+          element={<ProtectedRoute element={<UserManagementPage />} />}
         />
       </Routes>
     </Router>

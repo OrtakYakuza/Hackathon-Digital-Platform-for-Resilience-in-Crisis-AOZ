@@ -1,7 +1,17 @@
+from bson import ObjectId
 from fastapi import FastAPI
 from pymongo import MongoClient
 import os
 from fastapi.middleware.cors import CORSMiddleware
+
+
+# --- Database connections ---
+# MongoDB connection
+mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
+client = MongoClient("mongodb://root:example@localhost:27017/")
+db = client["aoz_db"]
+users_collection = db["users"]
+
 
 # Create FastAPI app
 app = FastAPI(title="AOZ Supply Coordination Backend")
@@ -16,12 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# --- Database connections ---
-# MongoDB connection
-mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
-client = MongoClient("mongodb://root:example@localhost:27017/")
-db = client["aoz_db"]
 
 # --- Routes ---
 @app.get("/")
@@ -161,3 +165,84 @@ def test_mongo():
         return {"mongo": "connection failed", "error": str(e)}
 
 
+# Helper function to convert MongoDB document to dict
+def user_to_dict(doc):
+    return {
+        "id": str(doc["_id"]),
+        "firstName": doc.get("firstName", ""),
+        "lastName": doc.get("lastName", ""),
+        "email": doc.get("email", ""),
+        "status": doc.get("status", ""),
+        "role": doc.get("role", ""),
+        "comments": doc.get("comments", "")
+    }
+
+@app.get("/users")
+def get_users():
+    users = users_collection.find()
+    return [user_to_dict(u) for u in users]
+
+@app.get("/users/{user_id}")
+def get_user(user_id: str):
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        return {}
+    return user_to_dict(user)
+
+@app.put("/users/{user_id}")
+def update_user(user_id: str, user_data: dict):
+    users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": user_data})
+    updated_user = users_collection.find_one({"_id": ObjectId(user_id)})
+    return user_to_dict(updated_user)
+
+@app.post("/users")
+def create_user(user_data: dict):
+    result = users_collection.insert_one(user_data)
+    new_user = users_collection.find_one({"_id": result.inserted_id})
+    return user_to_dict(new_user)
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: str):
+    users_collection.delete_one({"_id": ObjectId(user_id)})
+    return {"message": "Benutzer gelöscht"}
+
+@app.post("/users/populate")
+def populate_users():
+    users_collection.delete_many({})  # clear existing data
+    users_collection.insert_many(sample_users)
+    return {"status": "inserted sample users", "count": len(sample_users)}
+
+sample_users = [
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john@example.com",
+  "status": "Aktiv",
+  "role": "Mitarbeiter",
+  "comments": "Kriese 1, Kreis 3"
+},
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane@example.com",
+  "status": "Aktiv",
+  "role": "Admin",
+  "comments": ""
+},
+{
+  "firstName": "Alice",
+  "lastName": "Johnson",
+  "email": "alice@example.com",
+  "status": "Deaktiviert",
+  "role": "Wartung",
+  "comments": ""
+},
+{
+  "firstName": "Armon",
+  "lastName": "Joy",
+  "email": "armon@example.com",
+  "status": "Aktiv",
+  "role": "Vorsitzender",
+  "comments": "Teamleiterin Kriese 1"
+},
+]
