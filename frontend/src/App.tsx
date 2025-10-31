@@ -312,7 +312,8 @@ const Home: React.FC = () => {
 
 
         {/* Benutzerverwaltung Button */}
-        <Link
+        {["Admin", "Vorsitzender"].includes(role ?? "") && (
+          <Link
           to="/users"
           style={{
             display: "inline-flex",
@@ -341,7 +342,7 @@ const Home: React.FC = () => {
         >
           <SettingsIcon />
           Benutzerverwaltung
-        </Link>
+        </Link> )}
 
           <div style={{ marginBottom: "0.5rem" }}>Krisenstab internes System</div>
         <div style={{ fontSize: "0.7rem" }}>
