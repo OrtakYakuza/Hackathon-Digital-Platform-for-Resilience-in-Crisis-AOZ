@@ -1,0 +1,23 @@
+# ----------------------------
+# General
+# ----------------------------
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+*.bak
+*.orig
+
+# Logs
+*.log
+logs/
+
+# Python virtual environments (common at root)
+venv/
+.venv/
+
+# Environment files
+.env
+.env.*
+/.idea/
