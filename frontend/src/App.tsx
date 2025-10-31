@@ -11,6 +11,7 @@ import LocationsPage from "./LocationsPage";
 import LoginPage from "./LoginPage";
 import LocationItemsPage from "./LocationItemsPage";
 import ItemsPage from "./ItemsPage";
+import ItemCategoryPage from "./ItemCategoryPage";
 
 // simple landing/home page (optional, not protected)
 const Home: React.FC = () => {
@@ -95,6 +96,8 @@ const App: React.FC = () => {
         />
 
          <Route path="/item" element={<ItemsPage />} />
+
+          <Route path="/items/:name" element={<ItemCategoryPage />} />
       </Routes>
     </Router>
   );
