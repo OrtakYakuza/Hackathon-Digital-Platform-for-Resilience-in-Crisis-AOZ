@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const roles = ["Admin", "Staff-chief", "Staff-member", "Maintenance"] as const;
+const roles = ["Admin", "Vorsitzender", "Mitarbeiter", "Wartung"] as const;
 
 const LoginPage: React.FC = () => {
   // username is always a string
