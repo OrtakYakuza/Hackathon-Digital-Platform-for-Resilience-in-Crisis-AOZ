@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+
+// images
 import BuildingImg from "./assets/bahnhofstrasse10.jpg";
 import AccessPlanImg from "./assets/bildcentralLageplan.png";
+import BuildingImg2 from "./assets/sihlstrasse15.jpg";
+import AccessPlanImg2 from "./assets/15lage.png";
 
-// Types
+// ---------- Types ----------
 type StockEntry = {
   name: string;
   available: number;
@@ -20,16 +24,34 @@ type ApiResponse = {
   categories: CategoryStock;
 };
 
-// helper: map display name -> internal location code in DB
-const locationCodeMap: Record<string, string> = {
-  "AOZ Central Warehouse": "loc_centrum",
-  "AOZ Food Hub": "loc_west",
-  "AOZ Bedding Center": "loc_altstetten",
-  "AOZ Hygiene Depot": "loc_oerlikon",
-  "AOZ Outlet Zürich West": "loc_zuerichwest",
+// ---------- Name normalisation ----------
+// Whatever is in the URL (left side) -> what we call it internally (right side)
+const nameAlias: Record<string, string> = {
+  // old → new
+  "AOZ Central Warehouse": "Zentrales Warenhaus",
+  "AOZ Food Hub": "Verpflegungszentrum",
+  "AOZ Bedding Center": "Bettenzentrum",
+  "AOZ Hygiene Depot": "Medizinverwaltung",
+  "AOZ Outlet Zürich West": "AOZ Zürich West",
+
+  // already-new → new (idempotent)
+  "Zentrales Warenhaus": "Zentrales Warenhaus",
+  "Verpflegungszentrum": "Verpflegungszentrum",
+  "Bettenzentrum": "Bettenzentrum",
+  "Medizinverwaltung": "Medizinverwaltung",
+  "AOZ Zürich West": "AOZ Zürich West",
 };
 
-// static metadata you’ll edit for each place
+// canonical name -> backend code
+const locationCodeMap: Record<string, string> = {
+  "Zentrales Warenhaus": "loc_centrum",
+  "Verpflegungszentrum": "loc_west",
+  "Bettenzentrum": "loc_altstetten",
+  "Medizinverwaltung": "loc_oerlikon",
+  "AOZ Zürich West": "loc_zuerichwest",
+};
+
+// canonical name -> metadata for UI
 const locationMeta: Record<
   string,
   {
@@ -38,86 +60,108 @@ const locationMeta: Record<
     zugang: string;
     wartung: string;
     kontakt: string;
-    buildingImg: string; // placeholder URL or /public/ path
-    accessImg: string; // placeholder URL or /public/ path
+    buildingImg: string;
+    accessImg: string;
   }
 > = {
-  "AOZ Central Warehouse": {
+  "Zentrales Warenhaus": {
     address: "Bahnhofstrasse 10, 8001 Zürich",
     info:
-      "Zentrales Lager für Bettwaren und Grundausstattung. Priorität: Erstaufnahme.",
+      "Das zentrale Warenhaus dient als Hauptumschlagplatz für die materielle Grundversorgung. Hier werden Betten, Schlafsäcke, Decken und weitere Basisausstattung eingelagert, sortiert und für Einsätze oder Neuaufnahmen vorbereitet. Der Standort wird in der akuten Krisenlage als erste Verteilstelle genutzt und versorgt andere Lager sowie temporäre Unterkünfte in der Stadt.",
     zugang:
-      "Zugang über Hintereingang (Rampe). Badge erforderlich. Nach 20:00 nur via Bereitschaftsdienst.",
+      "Zutritt erfolgt über den rückseitigen Warenzugang. Der Bereich ist nur für autorisierte AOZ-Mitarbeitende und Einsatzlogistik freigegeben. Nach 20:00 Uhr ist der Zugang geschlossen; in dringenden Fällen erfolgt Zutritt ausschliesslich über den Bereitschaftsdienst. Besucher oder Privatpersonen haben keinen freien Zugang.",
     wartung:
-      "Tägliche Sichtkontrolle Brandschutz. Wöchentliche Bestandsprüfung Bettwaren.",
+      "Die Bestände werden regelmässig gezählt und auf Vollständigkeit geprüft. Insbesondere Betten, Feldbetten und Schlafsäcke werden auf Gebrauchszustand kontrolliert. Kleinere Reparaturen (z. B. verbogene Rahmen, defekte Verschlüsse) erfolgen vor Ort. Brandschutz und Fluchtwege werden wöchentlich geprüft und dokumentiert.",
     kontakt:
-      "Ansprechperson: Einsatzleitung Logistik, Tel. +41 44 000 00 00.",
+      "Leitung Logistik / Warenhauskoordination. Telefonische Erreichbarkeit über Einsatzkoordination unter Tel. +41 76 549 89 32. Vor Ort werktags besetzt von 07:30 bis 18:00 Uhr.",
     buildingImg: BuildingImg,
     accessImg: AccessPlanImg,
   },
-  "AOZ Food Hub": {
+
+  "Verpflegungszentrum": {
     address: "Sihlstrasse 15, 8005 Zürich",
     info:
-      "Primär Verpflegung und Hygieneartikel. Direkte Ausgabe an Standorte möglich.",
+      "Das Verpflegungszentrum ist das Drehkreuz für Lebensmittel, Getränke und Hygieneartikel. Von hier aus werden täglich essentielle Güter an Unterkünfte und Einsatzorte ausgeliefert. Der Standort ist auf schnelle Versorgung und spontane Krisenausgabe ausgelegt und unterstützt andere Lager bei Engpässen.",
     zugang:
-      "Laderampe EG. Fahrzeugzufahrt via Innenhof. Keine Privatfahrzeuge.",
+      "Die Anlieferung erfolgt über die Laderampe im Erdgeschoss. Zufahrt zum Hof nur für Einsatz- und Lieferfahrzeuge. Kein Zugang für Privatfahrzeuge. Für Personal ist der reguläre Zutritt tagsüber über den Seiteneingang geregelt.",
     wartung:
-      "Kühlräume täglich prüfen. Ablaufdaten kontrollieren.",
+      "Die Kühlräume und Lagerräume werden täglich auf Sauberkeit, Temperaturstabilität und Funktion geprüft. Ablaufdaten der Bestände werden im Tagesrhythmus kontrolliert, um jederzeit hygienisch einwandfreie Versorgung zu sichern.",
     kontakt:
-      "Koordination Verpflegung, Tel. +41 44 000 00 01.",
-    buildingImg: "/placeholder_building.jpg",
-    accessImg: "/placeholder_accessplan.jpg",
+      "Koordination Verpflegung AOZ. Tel. +41 44 000 00 01.",
+    buildingImg: BuildingImg2,
+    accessImg: AccessPlanImg2,
   },
-  "AOZ Bedding Center": {
+
+  "Bettenzentrum": {
     address: "Europaallee 20, 8004 Zürich",
     info:
-      "Lager für Decken, Kissen, Schlafsäcke. Wird als Overflow genutzt.",
+      "Das Bettenzentrum dient als Pufferlager für Schlafplätze und Grundausstattung wie Decken, Kissen und Schlafsäcke. Es wird vor allem dann genutzt, wenn kurzfristig zusätzliche Kapazitäten für Neuaufnahmen aufgebaut werden müssen.",
     zugang:
-      "Seiteneingang Nordseite. Schlüssel beim Sicherheitsdienst.",
+      "Zugang über den Seiteneingang auf der Nordseite. Schlüssel / Badge-Ausgabe erfolgt über den Sicherheitsdienst gegen Unterschrift.",
     wartung:
-      "Feuerlöscher / Evakuationsplan monatlich prüfen.",
+      "Brandschutzmittel, Notbeleuchtung und Evakuationspläne werden regelmässig geprüft. Das Material (Betten, Schlafsäcke etc.) wird visuell kontrolliert und bei Bedarf sofort ersetzt oder repariert.",
     kontakt:
-      "Lagerteam Bettwaren, Tel. +41 44 000 00 02.",
-    buildingImg: "/placeholder_building.jpg",
-    accessImg: "/placeholder_accessplan.jpg",
+      "Lagerteam Bettwaren. Tel. +41 44 000 00 02.",
+    buildingImg: BuildingImg2,
+    accessImg: AccessPlanImg2,
   },
-  "AOZ Hygiene Depot": {
+
+  "Medizinverwaltung": {
     address: "Werdstrasse 35, 8002 Zürich",
     info:
-      "Hygiene, Seife, Shampoo, Zahnbürsten. Packstation für Neuankünfte.",
+      "Drehscheibe für Hygiene- und medizinisch relevante Grundartikel wie Seife, Shampoo, Zahnbürsten und Erstversorgungssets. Von hier aus werden Erstpakete für Neuankommende konfektioniert.",
     zugang:
-      "Erdgeschoss, Seitentür links. Bitte nicht Haupteingang benutzen.",
+      "Der Zugang ist ebenerdig über die linke Seitentür möglich. Der Haupteingang ist dem Normalbetrieb vorbehalten und soll nicht genutzt werden.",
     wartung:
-      "Lager trocken halten, Temperatur 18–22 °C.",
+      "Lagerbereiche müssen trocken und sauber gehalten werden. Zieltemperatur 18–22 °C, um hygienische Qualität der Bestände sicherzustellen.",
     kontakt:
-      "Depot Hygiene, Tel. +41 44 000 00 03.",
+      "Depot Hygiene. Tel. +41 44 000 00 03.",
     buildingImg: "/placeholder_building.jpg",
     accessImg: "/placeholder_accessplan.jpg",
   },
-  "AOZ Outlet Zürich West": {
+
+  "AOZ Zürich West": {
     address: "Pfingstweidstrasse 100, 8005 Zürich",
     info:
-      "Ausgabe / Rotation von Material an laufende Unterkünfte.",
+      "AOZ Zürich West dient als Verteilstelle und Rotationspunkt: Ausrüstung aus Unterkünften wird ersetzt, sortiert und weitergegeben. Dieser Standort stützt die laufende Versorgung in bereits aktiven Unterkünften.",
     zugang:
-      "Direkter Zugang via Lieferantenzufahrt West. Ausweis zeigen.",
+      "Zufahrt via westliche Lieferantenzufahrt. Ausweis ist obligatorisch. Der Bereich muss für Einsatzfahrzeuge frei bleiben.",
     wartung:
-      "Paletten sauber stapeln. Wegflächen freihalten.",
+      "Paletten sauber stapeln, Laufwege freihalten. Brandschutz- und Rettungswege dürfen nicht zugestellt werden.",
     kontakt:
-      "AOZ Zürich West Logistik, Tel. +41 44 000 00 04.",
+      "AOZ Zürich West Logistik. Tel. +41 44 000 00 04.",
     buildingImg: "/placeholder_building.jpg",
     accessImg: "/placeholder_accessplan.jpg",
   },
 };
 
+// shared styles
+const cardBorder = "1px solid #d4dbea";
+const cardShadow = "0 8px 20px rgba(0,0,0,0.05)";
+const labelStyle: React.CSSProperties = {
+  fontSize: "0.8rem",
+  fontWeight: 600,
+  color: "#1e3a8a",
+  marginBottom: "0.5rem",
+};
+
 function LocationItemsPage() {
-  const { name } = useParams(); // URL part, e.g. "AOZ Central Warehouse"
-  const displayName = decodeURIComponent(name || "");
+  const { name } = useParams();
+
+  // raw from URL (encoded in the route)
+  const rawName = decodeURIComponent(name || "");
+
+  // normalize to canonical name
+  const canonicalName = nameAlias[rawName] || rawName;
+
+  // look up backend code + metadata based on canonical name
+  const codeForBackend = locationCodeMap[canonicalName];
+  const meta = locationMeta[canonicalName];
 
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const codeForBackend = locationCodeMap[displayName];
-
+  // fetch inventory for this location code
   useEffect(() => {
     const fetchStock = async () => {
       if (!codeForBackend) return;
@@ -138,8 +182,6 @@ function LocationItemsPage() {
     fetchStock();
   }, [codeForBackend]);
 
-  const meta = locationMeta[displayName];
-
   return (
     <div
       style={{
@@ -148,16 +190,29 @@ function LocationItemsPage() {
         padding: "2rem",
         backgroundColor: "#eef4fa",
         minHeight: "100vh",
+        color: "#1f2937",
       }}
     >
       {/* Back link */}
       <div style={{ marginBottom: "1rem" }}>
-        <Link to="/location" style={{ color: "#1e3a8a", fontSize: "0.9rem" }}>
-          ← Zurück zur Übersicht
+        <Link
+          to="/location"
+          style={{
+            color: "#1e3a8a",
+            fontSize: "0.9rem",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.4rem",
+            fontWeight: 500,
+          }}
+        >
+          <span style={{ fontSize: "1rem", lineHeight: 1 }}>←</span>
+          Zurück zur Übersicht
         </Link>
       </div>
 
-      {/* Page title */}
+      {/* Header */}
       <h1
         style={{
           margin: 0,
@@ -167,7 +222,7 @@ function LocationItemsPage() {
           color: "#1e3a8a",
         }}
       >
-        {displayName}
+        {canonicalName}
       </h1>
 
       <div
@@ -177,168 +232,127 @@ function LocationItemsPage() {
           marginTop: "0.25rem",
         }}
       >
-        {meta?.address || "Adresse unbekannt"}
+        {meta ? meta.address : "Adresse unbekannt"}
       </div>
 
-      {/* Top info section: left = images, right = text blocks */}
+      {/* TOP ROW: LEFT CARD (images) + RIGHT CARD (info) */}
       <div
         style={{
+          display: "flex",
+          flexWrap: "nowrap",
+          gap: "2rem",
+          alignItems: "flex-start",
           marginTop: "1.5rem",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1rem",
         }}
       >
-        {/* Left side: images */}
+        {/* LEFT CARD */}
         <div
           style={{
             backgroundColor: "#fff",
-            borderRadius: "6px",
-            border: "1px solid #d4dbea",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
-            padding: "1rem",
+            borderRadius: "8px",
+            border: cardBorder,
+            boxShadow: cardShadow,
+            padding: "1rem 1rem 1.25rem",
+            width: "360px",
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: "1.5rem",
           }}
         >
-          <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#1e3a8a" }}>
-            Gebäude
-          </div>
-          <div
-            style={{
-              width: "100%",
-              height: "160px",
-              backgroundColor: "#cbd5e1",
-              borderRadius: "4px",
-              overflow: "hidden",
-              marginTop: "0.5rem",
-              border: "1px solid #94a3b8",
-            }}
-          >
-            {/* building photo placeholder */}
-            <img
-              src={meta?.buildingImg || "/placeholder_building.jpg"}
-              alt={`${displayName} Gebäude`}
+          {/* Gebäude */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={labelStyle}>Gebäude</div>
+            <div
               style={{
                 width: "100%",
-                height: "100%",
-                objectFit: "cover",
+                height: "200px",
+                backgroundColor: "#cbd5e1",
+                borderRadius: "4px",
+                overflow: "hidden",
+                border: "1px solid #94a3b8",
               }}
-            />
+            >
+              <img
+                src={meta ? meta.buildingImg : "/placeholder_building.jpg"}
+                alt={`${canonicalName} Gebäude`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
           </div>
 
-          <div
-            style={{
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              color: "#1e3a8a",
-              marginTop: "1rem",
-            }}
-          >
-            Zugang / Lageplan
-          </div>
-          <div
-            style={{
-              width: "100%",
-              height: "140px",
-              backgroundColor: "#e2e8f0",
-              borderRadius: "4px",
-              overflow: "hidden",
-              marginTop: "0.5rem",
-              border: "1px solid #94a3b8",
-            }}
-          >
-            {/* access plan placeholder */}
-            <img
-              src={meta?.accessImg || "/placeholder_accessplan.jpg"}
-              alt={`${displayName} Zugang`}
+          {/* Zugang / Lageplan */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={labelStyle}>Zugang / Lageplan</div>
+            <div
               style={{
                 width: "100%",
-                height: "100%",
-                objectFit: "cover",
+                height: "260px",
+                backgroundColor: "#e2e8f0",
+                borderRadius: "4px",
+                overflow: "hidden",
+                border: "1px solid #94a3b8",
               }}
-            />
+            >
+              <img
+                src={meta ? meta.accessImg : "/placeholder_accessplan.jpg"}
+                alt={`${canonicalName} Zugang`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Right side: info blocks */}
+        {/* RIGHT CARD */}
         <div
           style={{
             backgroundColor: "#fff",
-            borderRadius: "6px",
-            border: "1px solid #d4dbea",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
-            padding: "1rem 1.25rem",
+            borderRadius: "8px",
+            border: cardBorder,
+            boxShadow: cardShadow,
+            padding: "1.25rem 1.5rem",
+            flexGrow: 1,
+            minWidth: 0,
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            columnGap: "1rem",
-            rowGap: "1rem",
-            fontSize: "0.8rem",
-            color: "#111827",
-            lineHeight: 1.4,
+            columnGap: "2rem",
+            rowGap: "2rem",
+            fontSize: "0.9rem",
+            lineHeight: 1.5,
+            color: "#1f2937",
           }}
         >
-          {/* Informationen */}
           <div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "#1e3a8a",
-                marginBottom: "0.4rem",
-              }}
-            >
-              Informationen
-            </div>
-            <div>{meta?.info || "–"}</div>
+            <div style={labelStyle}>Informationen</div>
+            <div>{meta ? meta.info : "–"}</div>
           </div>
 
-          {/* Zugang */}
           <div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "#1e3a8a",
-                marginBottom: "0.4rem",
-              }}
-            >
-              Zugang
-            </div>
-            <div>{meta?.zugang || "–"}</div>
+            <div style={labelStyle}>Zugang</div>
+            <div>{meta ? meta.zugang : "–"}</div>
           </div>
 
-          {/* Wartung */}
           <div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "#1e3a8a",
-                marginBottom: "0.4rem",
-              }}
-            >
-              Wartung
-            </div>
-            <div>{meta?.wartung || "–"}</div>
+            <div style={labelStyle}>Wartung</div>
+            <div>{meta ? meta.wartung : "–"}</div>
           </div>
 
-          {/* Kontakt */}
           <div>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "#1e3a8a",
-                marginBottom: "0.4rem",
-              }}
-            >
-              Kontakt
-            </div>
-            <div>{meta?.kontakt || "–"}</div>
+            <div style={labelStyle}>Kontakt</div>
+            <div>{meta ? meta.kontakt : "–"}</div>
           </div>
         </div>
       </div>
 
-      {/* Stock / Inventory section */}
+      {/* INVENTORY */}
       <div style={{ marginTop: "2rem" }}>
         <h2
           style={{
@@ -351,7 +365,11 @@ function LocationItemsPage() {
           Lagerbestand
         </h2>
 
-        {loading && <div style={{ fontSize: "0.8rem" }}>Lade Bestände…</div>}
+        {loading && (
+          <div style={{ fontSize: "0.8rem", color: "#4b5563" }}>
+            Lade Bestände…
+          </div>
+        )}
 
         {!loading && data && (
           <div style={{ display: "grid", gap: "1rem" }}>
@@ -362,8 +380,8 @@ function LocationItemsPage() {
                   style={{
                     backgroundColor: "#fff",
                     borderRadius: "6px",
-                    border: "1px solid #d4dbea",
-                    boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+                    border: cardBorder,
+                    boxShadow: cardShadow,
                     padding: "1rem 1rem",
                   }}
                 >
