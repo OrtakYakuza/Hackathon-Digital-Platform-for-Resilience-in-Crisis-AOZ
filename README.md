@@ -1,20 +1,39 @@
-# Hackathon-Template-Repository
-This is the official template repository for the **"Hackathon for Crisis Apps for GaaP"** seminar hackathon. All teams must use this template to create their project repository.
+# AOZ Crisis Supply Coordination Platform
 
-## 🚀 Quick Start: Creating Your Team Repository
-1. Fork this repository
-3. Add your team members as contributors
-4. This repository must be open source (and licensed) in order to submit
-5. Document your project following the instruction below
+## 1. Title of the Project
+**AOZ Crisis Supply Coordination Platform**
 
-## 💻 Project Documentation
-In the `README.md` file cover the following points:
-1. Title of the project
-2. List all team members
-3. Describe challenge
-4. Explain your solution (you can use screenshots and demo)
-5. Specify tech stack
+A digital platform to coordinate emergency supply procurement, storage, and distribution for AOZ (Asylorganisation Zürich) and related city departments during crisis situations.
 
-Before the pitch session put your presentation in the `pitch/` folder.
+---
 
-Happy hacking!
+## 2. Team Members
+- **Nikola Petrovic**
+- **Daniel Toth**
+- **Luca Zanetti**
+
+---
+
+## 3. Description of the Challenge
+During migration or humanitarian crises, AOZ must rapidly coordinate the procurement and management of essential goods such as beds, blankets, hygiene items, and furniture.  
+Currently, different departments (e.g., Zivilschutz, Sozialdepartement, Tiefbauamt) handle these supplies separately, leading to duplication, inefficient storage, and limited transparency.
+
+The challenge is to design a **centralized digital system** that improves coordination, enables joint procurement, monitors stock and availability in real time, and ensures faster response and resource allocation during emergencies.
+
+---
+
+## 4. Solution Overview
+*(To be completed after development — include screenshots, workflow, and demo link here)*
+
+---
+
+## 5. Tech Stack
+| Component | Technology |
+|------------|-------------|
+| **Frontend** | React (TypeScript) |
+| **Backend** | FastAPI (Python) |
+| **Database** | MongoDB (primary), PostgreSQL (optional for structured data) |
+| **Containerization** | Docker & Docker Compose |
+| **Tools & Utilities** | Mongo Express, Adminer, Node.js, npm |
+
+---
