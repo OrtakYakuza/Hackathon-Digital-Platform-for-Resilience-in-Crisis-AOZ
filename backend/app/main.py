@@ -1,7 +1,6 @@
 from bson import ObjectId
 from fastapi import FastAPI
 from pymongo import MongoClient
-import os
 from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
 from fastapi import Query
@@ -9,7 +8,6 @@ from fastapi import Query
 
 # --- Database connections ---
 # MongoDB connection
-mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
 client = MongoClient("mongodb://root:example@localhost:27017/")
 db = client["aoz_db"]
 users_collection = db["users"]
@@ -20,16 +18,11 @@ app = FastAPI(title="AOZ Supply Coordination Backend")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # React dev server
-        "http://127.0.0.1:3000",  # sometimes browsers resolve to 127.0.0.1
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 # --- Routes ---
 
 @app.get("/items/by_location")
@@ -217,7 +210,8 @@ def user_to_dict(doc):
         "id": str(doc["_id"]),
         "firstName": doc.get("firstName", ""),
         "lastName": doc.get("lastName", ""),
-        "email": doc.get("email", ""),
+        "address": doc.get("address", ""),
+        "phoneNumber": doc.get("phoneNumber", ""),
         "status": doc.get("status", ""),
         "role": doc.get("role", ""),
         "comments": doc.get("comments", "")
@@ -259,39 +253,71 @@ def populate_users():
     return {"status": "inserted sample users", "count": len(sample_users)}
 
 sample_users = [
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john@example.com",
-  "status": "Aktiv",
-  "role": "Mitarbeiter",
-  "comments": "Kriese 1, Kreis 3"
-},
-{
-  "firstName": "Jane",
-  "lastName": "Smith",
-  "email": "jane@example.com",
-  "status": "Aktiv",
-  "role": "Admin",
-  "comments": ""
-},
-{
-  "firstName": "Alice",
-  "lastName": "Johnson",
-  "email": "alice@example.com",
-  "status": "Deaktiviert",
-  "role": "Wartung",
-  "comments": ""
-},
-{
-  "firstName": "Armon",
-  "lastName": "Joy",
-  "email": "armon@example.com",
-  "status": "Aktiv",
-  "role": "Vorsitzender",
-  "comments": "Teamleiterin Kriese 1"
-},
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "phoneNumber": "+41 79 234 56 78",
+        "address": "Bahnhofstrasse 5, 8600 Dübendorf",
+        "status": "Aktiv",
+        "role": "Mitarbeiter",
+        "comments": "Kreis 1, Zürich"
+    },
+    {
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "phoneNumber": "+41 78 987 65 43",
+        "address": "Seestrasse 45, 8802 Kilchberg",
+        "status": "Aktiv",
+        "role": "Admin",
+        "comments": ""
+    },
+    {
+        "firstName": "Alice",
+        "lastName": "Johnson",
+        "phoneNumber": "+41 76 555 12 12",
+        "address": "Obstgartenstrasse 12, 8304 Wallisellen",
+        "status": "Deaktiviert",
+        "role": "Wartung",
+        "comments": ""
+    },
+    {
+        "firstName": "Armon",
+        "lastName": "Joy",
+        "phoneNumber": "+41 77 332 21 14",
+        "address": "Rebweg 9, 8134 Adliswil",
+        "status": "Aktiv",
+        "role": "Vorsitzender",
+        "comments": "Teamleiter Kreis 2"
+    },
+    {
+        "firstName": "Laura",
+        "lastName": "Becker",
+        "phoneNumber": "+41 79 998 87 76",
+        "address": "Lindenstrasse 22, 8707 Uetikon am See",
+        "status": "Aktiv",
+        "role": "Mitarbeiter",
+        "comments": "Unterstützt im Bereich Kommunikation"
+    },
+    {
+        "firstName": "Tobias",
+        "lastName": "Klein",
+        "phoneNumber": "+41 76 112 23 34",
+        "address": "Zürcherstrasse 18, 8952 Schlieren",
+        "status": "Aktiv",
+        "role": "Mitarbeiter",
+        "comments": "Verantwortlich für Dokumentation"
+    },
+    {
+        "firstName": "Marta",
+        "lastName": "Weiss",
+        "phoneNumber": "+41 78 556 67 78",
+        "address": "Wiesenstrasse 4, 8604 Volketswil",
+        "status": "Deaktiviert",
+        "role": "Wartung",
+        "comments": "Derzeit in Wartungspause"
+    }
 ]
+
 @app.get("/items/bedding")
 def get_bedding():
     """Return total count of bedding items by type (no status differentiation)"""
