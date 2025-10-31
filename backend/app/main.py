@@ -8,7 +8,7 @@ from fastapi import Query
 
 # --- Database connections ---
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://root:example@localhost:27017/")
 db = client["aoz_db"]
 users_collection = db["users"]
 

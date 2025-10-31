@@ -4,13 +4,8 @@ import { useNavigate } from "react-router-dom";
 const roles = ["Admin", "Vorsitzender", "Mitarbeiter", "Wartung"] as const;
 
 const LoginPage: React.FC = () => {
-  // username is always a string
   const [username, setUsername] = useState<string>("");
-
-  // role is always one of the entries in roles
   type Role = (typeof roles)[number];
-
-  // initialize with first role, and cast so TS stops complaining
   const [role, setRole] = useState<Role>(roles[0] as Role);
 
   const navigate = useNavigate();
@@ -21,11 +16,8 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    // Save login info to localStorage
     localStorage.setItem("username", username);
     localStorage.setItem("role", role);
-
-    // Redirect to homepage
     navigate("/home");
   };
 
@@ -36,33 +28,38 @@ const LoginPage: React.FC = () => {
         height: "100vh",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#f0f4f8",
         fontFamily: "'Poppins', sans-serif",
       }}
     >
       <div
         style={{
           backgroundColor: "white",
-          padding: "2rem 3rem",
-          borderRadius: "12px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-          width: "300px",
+          padding: "3rem 4rem",        // Increased padding
+          borderRadius: "16px",        // Slightly larger border radius
+          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.12)",
+          width: "420px",              // Wider container (was 300px)
+          maxWidth: "90vw",
           textAlign: "center",
         }}
       >
-        <h2>Login</h2>
+        <h2 style={{ fontSize: "1.8rem", marginBottom: "1.5rem", color: "#1e71b8" }}>
+          Login
+        </h2>
 
         <input
           type="text"
-          placeholder="Enter username"
+          placeholder="Benutzername eingeben"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{
             width: "100%",
-            padding: "0.6rem",
-            marginBottom: "1rem",
-            borderRadius: "6px",
+            padding: "0.9rem 1rem",     // Larger input padding
+            marginBottom: "1.2rem",
+            borderRadius: "8px",
             border: "1px solid #ccc",
+            fontSize: "1rem",
+            boxSizing: "border-box",
           }}
         />
 
@@ -71,10 +68,14 @@ const LoginPage: React.FC = () => {
           onChange={(e) => setRole(e.target.value as Role)}
           style={{
             width: "100%",
-            padding: "0.6rem",
-            marginBottom: "1rem",
-            borderRadius: "6px",
+            padding: "0.9rem 1rem",     // Larger select padding
+            marginBottom: "1.5rem",
+            borderRadius: "8px",
             border: "1px solid #ccc",
+            fontSize: "1rem",
+            backgroundColor: "white",
+            cursor: "pointer",
+            boxSizing: "border-box",
           }}
         >
           {roles.map((r) => (
@@ -88,16 +89,20 @@ const LoginPage: React.FC = () => {
           onClick={handleLogin}
           style={{
             width: "100%",
-            padding: "0.7rem",
+            padding: "0.9rem",
             backgroundColor: "#1e71b8",
             color: "white",
             border: "none",
-            borderRadius: "6px",
+            borderRadius: "8px",
             cursor: "pointer",
             fontWeight: "bold",
+            fontSize: "1.1rem",
+            transition: "background-color 0.2s",
           }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#155a94")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#1e71b8")}
         >
-          Continue
+          Fortsetzen
         </button>
       </div>
     </div>
