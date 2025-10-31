@@ -43,10 +43,10 @@ function LocationsPage() {
 
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
-      <Link to="/" style={{ color: "#007bff" }}>
+      <Link to="/home" style={{ color: "#007bff" }}>
         ← Back to Start
       </Link>
-      <h1>Locations in Zürich</h1>
+      <h1>Orte in Zürich</h1>
 
       {loading && <p>Loading...</p>}
 

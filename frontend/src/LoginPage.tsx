@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
     localStorage.setItem("username", username);
     localStorage.setItem("role", role);
 
-    // Redirect to location overview
+    // Redirect to homepage
     navigate("/home");
   };
 

@@ -10,6 +10,7 @@ import {
 import LocationsPage from "./LocationsPage";
 import LoginPage from "./LoginPage";
 import LocationItemsPage from "./LocationItemsPage";
+import ItemsPage from "./ItemsPage";
 
 // simple landing/home page (optional, not protected)
 const Home: React.FC = () => {
@@ -18,6 +19,23 @@ const Home: React.FC = () => {
       <h1>AOZ Crisis Supply Platform</h1>
 
       <p>Digital overview of supplies, depots and availability for AOZ response teams.</p>
+
+      <Link to="/item">
+              <button
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#007bff",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.25rem",
+                  cursor: "pointer",
+                  fontWeight: 500,
+                  marginTop: "1rem",
+                }}
+              >
+                Nach Artikel Suchen
+              </button>
+            </Link>
 
       <Link to="/location">
         <button
@@ -32,7 +50,7 @@ const Home: React.FC = () => {
             marginTop: "1rem",
           }}
         >
-          Go to Locations
+            Nach Ort Suchen
         </button>
       </Link>
     </div>
@@ -73,7 +91,10 @@ const App: React.FC = () => {
         <Route
           path="/location/:name"
           element={<ProtectedRoute element={<LocationItemsPage />} />}
+          
         />
+
+         <Route path="/item" element={<ItemsPage />} />
       </Routes>
     </Router>
   );

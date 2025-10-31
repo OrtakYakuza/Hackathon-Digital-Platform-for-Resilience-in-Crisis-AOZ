@@ -32,7 +32,7 @@ function LocationItemsPage() {
   return (
     <div style={{ padding: "1rem", fontFamily: "sans-serif" }}>
       <Link to="/location" style={{ color: "#007bff" }}>
-        ← Back to Locations
+        ← Zurück
       </Link>
       <h2>{decodeURIComponent(name || "")}</h2>
 
