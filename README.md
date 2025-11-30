@@ -1,7 +1,7 @@
-# AOZ Crisis Supply Coordination Platform
+# CrisisCore - Crisis Supply Coordination Platform
 
 ## 1. Title of the Project
-**AOZ Crisis Supply Coordination Platform**
+**CrisisCore - Crisis Supply Coordination Platform**
 
 A digital platform to coordinate emergency supply procurement, storage, and distribution for AOZ (Asylorganisation Zürich) and related city departments during crisis situations.
 
@@ -23,7 +23,26 @@ The challenge is to design a **centralized digital system** that improves coordi
 ---
 
 ## 4. Solution Overview
+** WORK IN PROGRESS **
 *(To be completed after development — include screenshots, workflow, and demo link here)*
+
+CrisisCore is designed with different use cases in mind. In crisis management, an intuitive UI and well thought through workflows are key. The following main user flows were identified:
+- A member of the crisis management team ("Kriesenstab" in German) requires some amout of a certain resource (for example beds or towels)
+- A member of the maintanance team wants to look up the stocks at a certain location
+- A crisis management team lead requires to fastely handle access permissions to the platform
+
+The above workflows resulted in the different UI's explained further below.
+
+### 4.1 General overview
+
+### 4.2 Items and Resources workflow
+
+### 4.3 Per Location stock workflow
+
+### 4.4 User Management
+
+### 4.5 Link to Demo Video
+
 
 ---
 
@@ -47,17 +66,14 @@ The initial planning phase consisting of User Stories and taking decisions in th
 | Task | Responsible team member |
 |------------|-------------|
 | Docker setup | Luca |
-|------------|-------------|
 | Backend - Items endpoints | Daniel |
 | Backend - Locations endpoints | Daniel |
 | Backend - Users endpoints | Luca |
-|------------|-------------|
 | Frontend - LogIn Page & Initial view | Nicola |
 | Frontend - Item Pages & navigation | Daniel |
 | Frontend - Locations Page | Nicola |
 | Frontend - User Management Page | Luca |
 | Frontend - General styling | Nicola |
-|------------|-------------|
 
 
 ### 6.2 Report
