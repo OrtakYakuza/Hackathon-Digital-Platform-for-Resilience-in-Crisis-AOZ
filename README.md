@@ -37,3 +37,40 @@ The challenge is to design a **centralized digital system** that improves coordi
 | **Tools & Utilities** | Mongo Express, Adminer, Node.js, npm |
 
 ---
+
+## 6. Responsibilities
+The following table shall give an overview of the different responsibilities each team member had.
+The initial planning phase consisting of User Stories and taking decisions in the design process was performed by all team mebers in collaboration.
+
+### 6.1 Solution Implementation
+
+| Task | Responsible team member |
+|------------|-------------|
+| Docker setup | Luca |
+|------------|-------------|
+| Backend - Items endpoints | Daniel |
+| Backend - Locations endpoints | Daniel |
+| Backend - Users endpoints | Luca |
+|------------|-------------|
+| Frontend - LogIn Page & Initial view | Nicola |
+| Frontend - Item Pages & navigation | Daniel |
+| Frontend - Locations Page | Nicola |
+| Frontend - User Management Page | Luca |
+| Frontend - General styling | Nicola |
+|------------|-------------|
+
+
+### 6.2 Report
+While all members reviewed and edied the different sections, the following table gives an overview over which member took the lead and did most of the work for the corresponding section.
+| Task | Responsible team member |
+|------------|-------------|
+| Problem and Motivation | Luca |
+| Solution design & fit to the GaaP concept | Nikola |
+| Approach | Daniel |
+| Collected Data | Daniel |
+| Analysis | Nikola |
+| Reflections | Luca |
+| Conclusions | Luca |
+| References | All |
+| Appendix | All |
+| GitHub ReadMe | Luca|
