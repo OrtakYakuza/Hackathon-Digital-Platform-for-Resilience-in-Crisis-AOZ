@@ -34,7 +34,7 @@ CrisisCore is designed with different use cases in mind. In crisis management, a
 The above workflows resulted in the different UI's explained further below.
 
 ### 4.1 General overview
-
+After sign in the following page is displayed with the 3 different options available:
 ### 4.2 Items and Resources workflow
 
 ### 4.3 Per Location stock workflow
@@ -69,11 +69,11 @@ The initial planning phase consisting of User Stories and taking decisions in th
 | Backend - Items endpoints | Daniel |
 | Backend - Locations endpoints | Daniel |
 | Backend - Users endpoints | Luca |
-| Frontend - LogIn Page & Initial view | Nicola |
+| Frontend - LogIn Page & Initial view | Nikola |
 | Frontend - Item Pages & navigation | Daniel |
-| Frontend - Locations Page | Nicola |
+| Frontend - Locations Page | Nikola |
 | Frontend - User Management Page | Luca |
-| Frontend - General styling | Nicola |
+| Frontend - General styling | Nikola |
 
 
 ### 6.2 Report
