@@ -1,4 +1,9 @@
+version: "3.9"
+
 services:
+  # -----------------------------
+  # MongoDB
+  # -----------------------------
   mongo:
     image: mongo
     restart: always
@@ -8,12 +13,52 @@ services:
     ports:
       - "27017:27017"
 
+  # -----------------------------
+  # Mongo Express (UI)
+  # -----------------------------
   mongo-express:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
       ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
+    depends_on:
+      - mongo
+
+  # -----------------------------
+  # Backend – FastAPI
+  # -----------------------------
+  backend:
+    build: ./backend
+    container_name: fastapi-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      MONGO_URL: mongodb://root:example@mongo:27017/
+    depends_on:
+      - mongo
+
+  # -----------------------------
+  # Frontend – React
+  # -----------------------------
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules            # prevents overwriting node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    depends_on:
+      - backend

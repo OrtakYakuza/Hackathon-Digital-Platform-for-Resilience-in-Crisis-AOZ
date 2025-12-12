@@ -1,3 +1,5 @@
+import os
+
 from bson import ObjectId
 from fastapi import FastAPI
 from pymongo import MongoClient
@@ -5,10 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from collections import defaultdict
 from fastapi import Query
 
-
 # --- Database connections ---
 # MongoDB connection
-client = MongoClient("mongodb://root:example@localhost:27017/")
+mongo_url = os.getenv("MONGO_URL")
+client = MongoClient(mongo_url)
 db = client["aoz_db"]
 users_collection = db["users"]
 
@@ -24,6 +26,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # --- Routes ---
+
+@app.on_event("startup")
+def startup_populate_db():
+    if users_collection.count_documents({}) == 0:
+        users_collection.insert_many(sample_users)
+        print("Populated mock user data.")
+    if db.items.count_documents({}) == 0:
+        db.items.insert_many(sample_items)
+        print("Populate mock item data.")
+    if db.locations.count_documents({}) == 0:
+        db.locations.insert_many(sample_locations)
+        print("Populate location data.")
+    print("Database population at startup finished.")
 
 @app.get("/items/by_location")
 def get_items_by_location(location: str = Query(..., description="e.g. loc_centrum")):
