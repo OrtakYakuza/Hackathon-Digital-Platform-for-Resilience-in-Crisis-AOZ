@@ -23,8 +23,6 @@ The challenge is to design a **centralized digital system** that improves coordi
 ---
 
 ## 4. Solution Overview
-** WORK IN PROGRESS **
-*(To be completed after development — include screenshots, workflow, and demo link here)*
 
 CrisisCore is designed with different use cases in mind. In crisis management, an intuitive UI and well thought through workflows are key. The following main user flows were identified:
 - A member of the crisis management team ("Kriesenstab" in German) requires some amout of a certain resource (for example beds or towels)
@@ -69,7 +67,7 @@ The user management view is only accessible for user with the administrator role
 ![alt text](img/user_management.png)
 
 ### 4.5 Link to Demo Video
-TBD
+Link to Demo Video on Youtube (no audio): https://youtu.be/7Zmi1uE-CMI
 
 ### 4.6 Running the application locally
 ***Perequisits***
