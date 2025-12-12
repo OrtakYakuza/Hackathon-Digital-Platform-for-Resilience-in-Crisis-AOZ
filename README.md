@@ -73,29 +73,15 @@ TBD
 
 ### 4.6 Running the application locally
 ***Perequisits***
-- Python version 3.11 installed
-- Node v20.8.1
-- npm v10.5.1
 - docker 
 - docker compose
+- alternatively Docker Desktop if desired
 
-***Backend***
-
-In order to run the backend, navigate into the `backend` folder and use the following command to install all required dependencies:
+The first time running the application, the container image creation might take 1-2 minutes.
+Run the containerized environment: 
 ```bash
-pip install --no-cache-dir -r requirements.txt
-```
-
-Build the containerized environent:
-```bash
+cd Hackathon-Digital-Platform-for-Resilience-in-Crisis-AOZ
 docker compose up -d
-```
-
-Run development server:
-```bash
-cd backend
-cd app
-uvicorn main:app --reload
 ```
 
 Verify that the backend is running successfully:
@@ -104,19 +90,10 @@ Verify that the backend is running successfully:
 
 - Check DB UI page: http://localhost:8081/ should ask for a username and password when accessed
 
+- Check the frontend: http://localhost:3000/
 
-
-***Frontend***
-For the frontend install all dependencies using:
-```
-cd frontend
-npm install
-```
-
-Run the application using the following command:
-```
-npm start
-```
+After start up some test data should already be populated, if not please use the populate endpoints on the Swagger page to do so.
+Happy testing!
 
 ---
 
